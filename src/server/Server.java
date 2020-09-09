@@ -3,7 +3,6 @@ package server;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.nio.ByteBuffer;
 
 public class Server {
 
@@ -27,7 +26,7 @@ public class Server {
             double[] variables = parseMessage(message);
             double value = calculateValue(variables[0], variables[1], variables[2]);
 
-            ByteBuffer.wrap(buffer).putDouble(value);
+            buffer = String.valueOf(value).getBytes();
             datagramPacket = new DatagramPacket(buffer, buffer.length, inetAddress, port);
             datagramSocket.send(datagramPacket);
             datagramSocket.close();

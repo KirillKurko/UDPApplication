@@ -3,6 +3,7 @@ package client;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Client {
@@ -24,6 +25,7 @@ public class Client {
             DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length, inetAddress, port);
             datagramSocket.send(datagramPacket);
 
+            Arrays.fill(buffer, (byte)0);
             datagramPacket = new DatagramPacket(buffer, buffer.length);
             datagramSocket.receive(datagramPacket);
             String message = new String(datagramPacket.getData()).trim();
@@ -43,11 +45,11 @@ public class Client {
     private double[] getVariablesFromInput() {
         double[] variables = new double[3];
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter x: ");
+        System.out.print("Enter x: ");
         variables[0] = scanner.nextDouble();
-        System.out.println("Enter y: ");
+        System.out.print("Enter y: ");
         variables[1] = scanner.nextDouble();
-        System.out.println("Enter z: ");
+        System.out.print("Enter z: ");
         variables[2] = scanner.nextDouble();
         return variables;
     }
