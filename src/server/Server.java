@@ -1,15 +1,37 @@
 package server;
 
+import javax.xml.crypto.Data;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.nio.ByteBuffer;
 
 public class Server {
 
     private final static int port = 8080;
     private final static int bufferSize = 1024;
+    private byte[] buffer = null;
     private DatagramSocket datagramSocket = null;
 
     public Server() {
         try {
+            datagramSocket = new DatagramSocket(port);
+            buffer = new byte[bufferSize];
+            System.out.println("Server started on " + datagramSocket.getLocalAddress() + " : " + datagramSocket.getLocalPort());
+
+            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
+            datagramSocket.receive(datagramPacket);
+
+            InetAddress inetAddress = datagramPacket.getAddress();
+            int port = datagramPacket.getPort();
+            String message = new String(datagramPacket.getData()).trim();
+            double[] variables = parseMessage(message);
+            double value = calculateValue(variables[0], variables[1], variables[2]);
+
+            ByteBuffer.wrap(buffer).putDouble(value);
+            datagramPacket = new DatagramPacket(buffer, buffer.length, inetAddress, port);
+            datagramSocket.send(datagramPacket);
+            datagramSocket.close();
 
         }
         catch (Exception exception) {
