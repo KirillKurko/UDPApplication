@@ -17,11 +17,20 @@ public class Server {
         }
     }
 
-    private double calculateValue(float x, float y, float z) {
+    private double calculateValue(double x, double y, double z) {
         double numerator = x + y / (5 + Math.sqrt(x));
         double denominator = Math.abs(y - x) + Math.cbrt(x);
         double temp = numerator / denominator * Math.exp(z + 1);
         return temp + Math.pow(Math.sin(z), 3);
+    }
+
+    private double[] parseMessage(String message) {
+        double[] variables = new double[3];
+        String[] strings = message.split(" ");
+        for (int i = 0; i < strings.length; ++i) {
+            variables[i] = Double.parseDouble(strings[i]);
+        }
+        return variables;
     }
 
 
