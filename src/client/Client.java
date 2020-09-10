@@ -34,7 +34,6 @@ public class Client {
         }
     }
 
-
     private String createMessage(double[] variables) {
         return variables[0] + " " + variables[1] + " " + variables[2];
     }
