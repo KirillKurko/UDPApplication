@@ -9,16 +9,13 @@ import java.util.Scanner;
 public class Client {
 
     private final static int port = 8080;
-    private DatagramSocket datagramSocket;
-    private InetAddress inetAddress;
     private final static int bufferSize = 1024;
-    private byte[] buffer;
 
     public Client() {
         try {
-            datagramSocket = new DatagramSocket();
-            inetAddress = InetAddress.getByName("localhost");
-            buffer = new byte[bufferSize];
+            DatagramSocket datagramSocket = new DatagramSocket();
+            InetAddress inetAddress = InetAddress.getByName("localhost");
+            byte[] buffer = new byte[bufferSize];
 
             double[] variables = getVariablesFromInput();
             buffer = createMessage(variables).getBytes();

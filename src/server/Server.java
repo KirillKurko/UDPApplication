@@ -43,18 +43,6 @@ public class Server {
         }
     }
 
-    private void writeToFile(double[] variables, double value) {
-        try {
-            Writer writer = new FileWriter("dataFile.txt");
-            writer.write("x: " + variables[0] + ", y: " + variables[1] + ", z: " + variables[2] + ". f = " + value + "\n");
-            writer.close();
-        }
-        catch (IOException exception) {
-            System.err.println("Error: " + exception.getMessage());
-        }
-    }
-
-
     private double calculateValue(double x, double y, double z) {
         double numerator = x + y / (5 + Math.sqrt(x));
         double denominator = Math.abs(y - x) + Math.cbrt(x);
@@ -71,6 +59,16 @@ public class Server {
         return variables;
     }
 
+    private void writeToFile(double[] variables, double value) {
+        try {
+            Writer writer = new FileWriter("dataFile.txt");
+            writer.write("x: " + variables[0] + ", y: " + variables[1] + ", z: " + variables[2] + ". f = " + value + "\n");
+            writer.close();
+        }
+        catch (IOException exception) {
+            System.err.println("Error: " + exception.getMessage());
+        }
+    }
 
     public static void main(String[] args) {
         Server server = new Server();
