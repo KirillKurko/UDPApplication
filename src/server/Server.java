@@ -1,5 +1,8 @@
 package server;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -8,27 +11,30 @@ public class Server {
 
     private final static int port = 8080;
     private final static int bufferSize = 1024;
-    private byte[] buffer = null;
-    private DatagramSocket datagramSocket = null;
 
     public Server() {
         try {
-            datagramSocket = new DatagramSocket(port);
-            buffer = new byte[bufferSize];
-            System.out.println("Server started on " + datagramSocket.getLocalAddress() + " : " + datagramSocket.getLocalPort());
+            DatagramSocket datagramSocket = new DatagramSocket(port);
+            byte[] buffer = new byte[bufferSize];
+            System.out.println("Server started on port " + datagramSocket.getLocalPort());
+            String message;
 
-            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-            datagramSocket.receive(datagramPacket);
+            boolean isRunning = true;
+            while (isRunning) {
+                DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
+                datagramSocket.receive(datagramPacket);
 
-            InetAddress inetAddress = datagramPacket.getAddress();
-            int port = datagramPacket.getPort();
-            String message = new String(datagramPacket.getData()).trim();
-            double[] variables = parseMessage(message);
-            double value = calculateValue(variables[0], variables[1], variables[2]);
+                InetAddress inetAddress = datagramPacket.getAddress();
+                int port = datagramPacket.getPort();
+                message = new String(datagramPacket.getData()).trim();
+                double[] variables = parseMessage(message);
+                double value = calculateValue(variables[0], variables[1], variables[2]);
+                writeToFile(variables, value);
 
-            buffer = String.valueOf(value).getBytes();
-            datagramPacket = new DatagramPacket(buffer, buffer.length, inetAddress, port);
-            datagramSocket.send(datagramPacket);
+                buffer = String.valueOf(value).getBytes();
+                datagramPacket = new DatagramPacket(buffer, buffer.length, inetAddress, port);
+                datagramSocket.send(datagramPacket);
+            }
             datagramSocket.close();
 
         }
@@ -36,6 +42,18 @@ public class Server {
             System.err.println("Error: " + exception.getMessage());
         }
     }
+
+    private void writeToFile(double[] variables, double value) {
+        try {
+            Writer writer = new FileWriter("dataFile.txt");
+            writer.write("x: " + variables[0] + ", y: " + variables[1] + ", z: " + variables[2] + ". f = " + value + "\n");
+            writer.close();
+        }
+        catch (IOException exception) {
+            System.err.println("Error: " + exception.getMessage());
+        }
+    }
+
 
     private double calculateValue(double x, double y, double z) {
         double numerator = x + y / (5 + Math.sqrt(x));
